@@ -1,8 +1,8 @@
-import { View, FlatList, StyleSheet } from "react-native";
 import { useLayoutEffect } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 
-import { TRAILS, AREAS } from "../data/dummy-data";
 import TrailItem from "../components/TrailItem";
+import { AREAS, TRAILS } from "../data/dummy-data";
 
 function TrailsScreen({ route, navigation }) {
   const areaId = route.params.areaId;
