@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, ScrollView } from "react-native";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useContext } from "react";
 
 import { TRAILS } from "../data/dummy-data";
 import TrailSummary from "../components/TrailSummary";
@@ -7,30 +7,40 @@ import StatRow from "../components/StatRow";
 import Subtitle from "../components/Subtitle";
 import List from "../components/List";
 import IconButton from "../components/IconButton";
+import { SavedContext } from "../store/SavedContext";
 
 function TrailDetailScreen({ route, navigation }) {
+  const savedTrailsCtx = useContext(SavedContext);
+
   const trailId = route.params.trailId;
 
   const selectedTrail = TRAILS.find((trail) => trail.id === trailId);
 
-  useLayoutEffect(() => {
-    function headerButtonPressHandler() {
-      console.log("pressed");
-    }
+  const trailIsSaved = savedTrailsCtx.ids.includes(trailId);
 
+  // Toggle whether the trail is saved
+  function changeSavedStatusHandler() {
+    if (trailIsSaved) {
+      savedTrailsCtx.removeTrail(trailId);
+    } else {
+      savedTrailsCtx.addTrail(trailId);
+    }
+  }
+
+  useLayoutEffect(() => {
     navigation.setOptions({
       title: selectedTrail.name,
       headerRight: () => {
         return (
           <IconButton
-            onPress={headerButtonPressHandler}
-            icon="star"
+            onPress={changeSavedStatusHandler}
+            icon={trailIsSaved ? "bookmark" : "bookmark-outline"}
             color="white"
           />
         );
       },
     });
-  }, [navigation, selectedTrail]);
+  }, [navigation, selectedTrail, trailIsSaved, changeSavedStatusHandler]);
 
   return (
     <ScrollView style={styles.root}>

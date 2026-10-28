@@ -7,9 +7,7 @@ function TrailItem({ id, name, lengthMiles, difficulty }) {
   const navigation = useNavigation();
 
   function selectTrailItemHandler() {
-    navigation.navigate("TrailDetail", {
-      trailId: id,
-    });
+    navigation.navigate("Explore", { screen: "TrailDetail", params: { trailId: id } });
   }
 
   return (

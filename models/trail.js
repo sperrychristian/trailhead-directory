@@ -1,7 +1,5 @@
-// A Trail is the main record in the app (like a Meal in the Meals app).
-//
-// The constructor takes ONE object instead of a long list of arguments,
-// so each value in dummy-data.js is labeled and the order doesn't matter.
+// A Trail is the main record in the app.
+// The constructor takes a single object so each field in dummy-data.js is labeled.
 class Trail {
   constructor({
     id,

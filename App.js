@@ -13,6 +13,7 @@ import TrailsScreen from "./screens/TrailsScreen";
 import TrailDetailScreen from "./screens/TrailDetailScreen";
 import SavedScreen from "./screens/SavedScreen";
 import AboutScreen from "./screens/AboutScreen";
+import SavedContextProvider from "./store/SavedContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -121,9 +122,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      <NavigationContainer>
-        <DrawerNavigator />
-      </NavigationContainer>
+      <SavedContextProvider>
+        <NavigationContainer>
+          <DrawerNavigator />
+        </NavigationContainer>
+      </SavedContextProvider>
     </View>
   );
 }

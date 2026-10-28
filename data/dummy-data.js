@@ -1,8 +1,7 @@
 import Area from '../models/area';
 import Trail from '../models/trail';
 
-// This is sample data! Distances and elevation gains are rounded,
-// approximate figures, this is fine for a lab app, it is not an official hiking guide.
+// Sample data. Distances and elevation gains are approximate and not an official hiking guide.
 
 export const AREAS = [
   new Area('a1', 'Logan Canyon', '#2E7D32'),

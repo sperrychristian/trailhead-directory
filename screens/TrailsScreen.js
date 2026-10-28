@@ -1,7 +1,6 @@
 import { useLayoutEffect } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
 
-import TrailItem from "../components/TrailItem";
+import TrailsList from "../components/TrailsList";
 import { AREAS, TRAILS } from "../data/dummy-data";
 
 function TrailsScreen({ route, navigation }) {
@@ -19,31 +18,7 @@ function TrailsScreen({ route, navigation }) {
     });
   }, [areaId, navigation]);
 
-  function renderTrailItem(itemData) {
-    const item = itemData.item;
-
-    const trailItemProps = {
-      id: item.id,
-      name: item.name,
-      lengthMiles: item.lengthMiles,
-      difficulty: item.difficulty,
-    };
-
-    return <TrailItem {...trailItemProps} />;
-  }
-
-  return (
-    <View style={styles.container}>
-      <FlatList data={displayedTrails} renderItem={renderTrailItem} />
-    </View>
-  );
+  return <TrailsList items={displayedTrails} />;
 }
 
 export default TrailsScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-});
