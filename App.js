@@ -13,6 +13,7 @@ import TrailsScreen from "./screens/TrailsScreen";
 import TrailDetailScreen from "./screens/TrailDetailScreen";
 import SavedScreen from "./screens/SavedScreen";
 import AboutScreen from "./screens/AboutScreen";
+import LogHikeScreen from "./screens/LogHikeScreen";
 import SavedContextProvider from "./store/SavedContext";
 
 const Stack = createNativeStackNavigator();
@@ -39,6 +40,11 @@ function ExploreStack() {
       />
       <Stack.Screen name="Trails" component={TrailsScreen} />
       <Stack.Screen name="TrailDetail" component={TrailDetailScreen} />
+      <Stack.Screen
+        name="LogHike"
+        component={LogHikeScreen}
+        options={{ title: "Log a Hike" }}
+      />
     </Stack.Navigator>
   );
 }

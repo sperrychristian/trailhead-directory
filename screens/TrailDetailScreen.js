@@ -7,6 +7,7 @@ import StatRow from "../components/StatRow";
 import Subtitle from "../components/Subtitle";
 import List from "../components/List";
 import IconButton from "../components/IconButton";
+import Button from "../components/Button";
 import { SavedContext } from "../store/SavedContext";
 
 function TrailDetailScreen({ route, navigation }) {
@@ -25,6 +26,10 @@ function TrailDetailScreen({ route, navigation }) {
     } else {
       savedTrailsCtx.addTrail(trailId);
     }
+  }
+
+  function logHikeHandler() {
+    navigation.navigate("LogHike", { trailName: selectedTrail.name });
   }
 
   useLayoutEffect(() => {
@@ -50,6 +55,9 @@ function TrailDetailScreen({ route, navigation }) {
         difficulty={selectedTrail.difficulty}
         textStyle={styles.detailText}
       />
+      <Button style={styles.logHikeButton} onPress={logHikeHandler}>
+        Log a Hike
+      </Button>
       <View style={styles.listOuterContainer}>
         <View style={styles.listContainer}>
           <Subtitle>Stats</Subtitle>
@@ -94,6 +102,10 @@ const styles = StyleSheet.create({
   },
   detailText: {
     color: "black",
+  },
+  logHikeButton: {
+    alignSelf: "center",
+    marginVertical: 8,
   },
   description: {
     fontSize: 14,
