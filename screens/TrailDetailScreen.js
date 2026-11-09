@@ -1,5 +1,12 @@
-import { Text, View, StyleSheet, ScrollView } from "react-native";
-import { useLayoutEffect, useContext } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useLayoutEffect, useContext, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { TRAILS } from "../data/dummy-data";
 import TrailSummary from "../components/TrailSummary";
@@ -9,9 +16,14 @@ import List from "../components/List";
 import IconButton from "../components/IconButton";
 import Button from "../components/Button";
 import { SavedContext } from "../store/SavedContext";
+import { fetchHikes } from "../util/http";
 
 function TrailDetailScreen({ route, navigation }) {
   const savedTrailsCtx = useContext(SavedContext);
+
+  const [hikes, setHikes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const trailId = route.params.trailId;
 
@@ -46,6 +58,40 @@ function TrailDetailScreen({ route, navigation }) {
       },
     });
   }, [navigation, selectedTrail, trailIsSaved, changeSavedStatusHandler]);
+
+  // Reload hikes each time the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      async function loadHikes() {
+        setIsLoading(true);
+        setError("");
+        try {
+          const allHikes = await fetchHikes();
+          setHikes(
+            allHikes.filter((hike) => hike.trailName === selectedTrail.name)
+          );
+        } catch (error) {
+          setError("Could not load hikes. Please try again later.");
+        }
+        setIsLoading(false);
+      }
+
+      loadHikes();
+    }, [selectedTrail])
+  );
+
+  let hikesContent;
+  if (isLoading) {
+    hikesContent = <ActivityIndicator style={styles.status} color="#1f3d2b" />;
+  } else if (error) {
+    hikesContent = <Text style={styles.errorText}>{error}</Text>;
+  } else if (hikes.length === 0) {
+    hikesContent = <Text style={styles.statusText}>No hikes logged yet</Text>;
+  } else {
+    hikesContent = hikes.map((hike) => (
+      <StatRow key={hike.id} label={hike.date} value={`${hike.miles} mi`} />
+    ));
+  }
 
   return (
     <ScrollView style={styles.root}>
@@ -82,6 +128,8 @@ function TrailDetailScreen({ route, navigation }) {
           <List data={selectedTrail.highlights} />
           <Subtitle>Tips</Subtitle>
           <List data={selectedTrail.tips} />
+          <Subtitle>My Hikes</Subtitle>
+          {hikesContent}
         </View>
       </View>
     </ScrollView>
@@ -117,5 +165,20 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     width: "90%",
+  },
+  status: {
+    marginVertical: 8,
+  },
+  statusText: {
+    fontSize: 14,
+    color: "#1f3d2b",
+    textAlign: "center",
+    marginVertical: 8,
+  },
+  errorText: {
+    fontSize: 14,
+    color: "#b3261e",
+    textAlign: "center",
+    marginVertical: 8,
   },
 });

@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { Text, StyleSheet, ScrollView, Alert } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { storeHike } from "../util/http";
 
 // Returns true only for real calendar dates in YYYY-MM-DD format
 function isValidDate(value) {
@@ -24,6 +31,7 @@ function LogHikeScreen({ route, navigation }) {
 
   const [inputs, setInputs] = useState({ date: "", miles: "", notes: "" });
   const [errors, setErrors] = useState({ date: "", miles: "" });
+  const [isSaving, setIsSaving] = useState(false);
 
   function inputChangeHandler(inputIdentifier, enteredValue) {
     setInputs((currentInputs) => {
@@ -31,7 +39,7 @@ function LogHikeScreen({ route, navigation }) {
     });
   }
 
-  function submitHandler() {
+  async function submitHandler() {
     const date = inputs.date.trim();
     const miles = Number(inputs.miles);
 
@@ -50,6 +58,18 @@ function LogHikeScreen({ route, navigation }) {
     setErrors({ date: dateError, miles: milesError });
 
     if (dateError || milesError) {
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await storeHike({ trailName, date, miles, notes: inputs.notes });
+    } catch (error) {
+      setIsSaving(false);
+      Alert.alert(
+        "Could not save hike",
+        "Please check your connection and try again."
+      );
       return;
     }
 
@@ -96,9 +116,17 @@ function LogHikeScreen({ route, navigation }) {
           value: inputs.notes,
         }}
       />
-      <Button style={styles.button} onPress={submitHandler}>
-        Save
-      </Button>
+      {isSaving ? (
+        <ActivityIndicator
+          style={styles.button}
+          size="large"
+          color="#1f3d2b"
+        />
+      ) : (
+        <Button style={styles.button} onPress={submitHandler}>
+          Save
+        </Button>
+      )}
     </ScrollView>
   );
 }
